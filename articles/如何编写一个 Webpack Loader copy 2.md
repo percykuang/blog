@@ -34,3 +34,19 @@ module.exports = {
   },
 };
 ```
+
+## 3. 配置 Loader
+
+```js
+// 配置 Loader
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: ['babel-loader'],
+      },
+    ],
+  },
+};
+``` 
