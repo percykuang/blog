@@ -22,14 +22,14 @@
     "content": "\n> 在平时自己由零搭建项目时，虽然基础配置都比较熟悉，比如配置 file-loader, url-loader, css-loader 等，配置不难，但究竟是怎么起作用的呢，今天就来说说如何编写一个 Webpack Loader。\n\n# Loader 作用\n\n按我自己的简单理解，loader 通常指打包的方案，即按什么方式来处理打包，打包的时候它可以拿到模块源代码，经过特定 loader 的转换后返回新的结果。\n比如 sass-loader 可以把 SCSS 代码转换成 CSS 代码\n"
   },
   {
-    "id": "199296048",
+    "id": "1798789778",
     "title": "如何编写一个 Webpack Loader copy 2",
     "date": "2024-02-15",
     "tags": [
       "webpack"
     ],
     "fileName": "如何编写一个 Webpack Loader copy 2.md",
-    "content": "\n> 在平时自己由零搭建项目时，虽然基础配置都比较熟悉，比如配置 file-loader, url-loader, css-loader 等，配置不难，但究竟是怎么起作用的呢，今天就来说说如何编写一个 Webpack Loader。\n\n# Loader 作用\n\n按我自己的简单理解，loader 通常指打包的方案，即按什么方式来处理打包，打包的时候它可以拿到模块源代码，经过特定 loader 的转换后返回新的结果。\n比如 sass-loader `可以把 SCSS 代码转换成 CSS 代码`\n"
+    "content": "\n> 在平时自己由零搭建项目时，虽然基础配置都比较熟悉，比如配置 file-loader, url-loader, css-loader 等，配置不难，但究竟是怎么起作用的呢，今天就来说说如何编写一个 Webpack Loader。\n\n# Loader 作用\n\n按我自己的简单理解，loader 通常指打包的方案，即按什么方式来处理打包，打包的时候它可以拿到模块源代码，经过特定 loader 的转换后返回新的结果。\n比如 sass-loader `可以把 SCSS 代码转换成 CSS 代码`\n\n# 如何编写一个 Loader\n\n## 1. 创建一个 Loader\n\n```js\n// 创建一个 loader\nmodule.exports = function (source) {\n  return source.replace(/console\\.log\\(([^)]+)\\);?/g, '');\n};\n```\n\n## 2. 使用 Loader\n\n```js\n// 在 webpack 配置中使用 loader\nmodule.exports = {\n  module: {\n    rules: [\n      {\n        test: /\\.js$/,\n        use: ['babel-loader'],\n      },\n    ],\n  },\n};\n```\n\n## 3. 配置 Loader\n\n```js\n// 配置 Loader\nmodule.exports = {\n  module: {\n    rules: [\n      {\n        test: /\\.js$/,\n        use: ['babel-loader'],\n      },\n    ],\n  },\n};\n``` \n"
   },
   {
     "id": "176010091",
