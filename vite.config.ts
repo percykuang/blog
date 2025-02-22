@@ -8,6 +8,10 @@ import { createArticleWatcher } from './plugins/article-watcher';
 export default defineConfig({
   base: '/',
   plugins: [react(), tailwindcss(), createArticleWatcher()],
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
   server: {
     host: '0.0.0.0', // 监听所有网络接口
   },
