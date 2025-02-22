@@ -10,7 +10,7 @@ const App: FC = () => {
     <div className="max-w-192 mx-auto mb-0 mt-10 pb-20">
       <TopNav />
       <div className="max-md:mx-4 max-md:my-0">
-        <BrowserRouter basename="/blog">
+        <BrowserRouter basename="/">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/tags" element={<Tags />} />

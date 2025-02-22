@@ -6,7 +6,7 @@ import { defineConfig } from 'vite';
 import { createArticleWatcher } from './plugins/article-watcher';
 
 export default defineConfig({
-  base: '/blog/',
+  base: '/',
   plugins: [react(), tailwindcss(), createArticleWatcher()],
   build: {
     outDir: 'dist',
