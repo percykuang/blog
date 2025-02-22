@@ -7,10 +7,10 @@ import { AboutMe, Detail, Home, TagDetail, Tags } from '@/pages';
 
 const App: FC = () => {
   return (
-    <div className="max-w-192 mx-auto mb-0 mt-10 pb-20">
-      <TopNav />
-      <div className="max-md:mx-4 max-md:my-0">
-        <BrowserRouter basename="/">
+    <BrowserRouter>
+      <div className="max-w-192 mx-auto mb-0 mt-10 pb-20">
+        <TopNav />
+        <div className="max-md:mx-4 max-md:my-0">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/tags" element={<Tags />} />
@@ -18,9 +18,9 @@ const App: FC = () => {
             <Route path="/articles/:id" element={<Detail />} />
             <Route path="/about-me" element={<AboutMe />} />
           </Routes>
-        </BrowserRouter>
+        </div>
       </div>
-    </div>
+    </BrowserRouter>
   );
 };
 
