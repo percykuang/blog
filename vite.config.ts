@@ -6,6 +6,7 @@ import { defineConfig } from 'vite';
 import { createArticleWatcher } from './plugins/article-watcher';
 
 export default defineConfig({
+  base: '/',
   plugins: [react(), tailwindcss(), createArticleWatcher()],
   server: {
     host: '0.0.0.0', // 监听所有网络接口
