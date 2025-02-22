@@ -3,7 +3,7 @@ import type { FC } from 'react';
 const AboutMe: FC = () => {
   return (
     <div className="relative mt-10">
-      <h1 className="text-2xl font-bold">👋 Hi, I'm PercyKuang 👨‍💻‍</h1>
+      <h1 className="text-2xl font-bold">👋 Hi, I'm Percy Kuang 👨‍💻‍</h1>
       <p className="mt-4 text-base leading-10">
         一个专注于前端开发的工程师，喜欢研究技术，喜欢分享，喜欢学习，喜欢思考。大学毕业后在字节跳动的飞书部门工作了三年，对
         B
