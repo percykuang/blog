@@ -25,6 +25,22 @@ function parseTags(tagLine: string): string[] {
   return []; // 返回空数组如果没有匹配
 }
 
+function countWords(content: string): number {
+  // 移除 markdown 语法标记
+  const cleanText = content
+    .replace(/```[\s\S]*?```/g, '') // 代码块
+    .replace(/`.*?`/g, '') // 行内代码
+    .replace(/\[.*?\]\(.*?\)/g, '') // 链接
+    .replace(/[#*_~`]/g, '') // 其他 markdown 标记
+    .trim();
+
+  // 计算中文字符和英文单词
+  const chineseChars = (cleanText.match(/[\u4e00-\u9fa5]/g) || []).length;
+  const englishWords = cleanText.match(/[a-zA-Z]+/g)?.length || 0;
+
+  return chineseChars + englishWords;
+}
+
 // 生成文章列表的函数
 export function generateArticleList() {
   const articlesDir = join(process.cwd(), 'articles');
@@ -39,12 +55,14 @@ export function generateArticleList() {
     const tagLine = lines[1];
     const tags = parseTags(tagLine);
     const fileContent = lines.slice(2).join('\n');
+    const wordCount = countWords(fileContent);
     const data = {
       title: fileName.replace('.md', ''),
       date,
       tags,
       fileName,
       content: fileContent,
+      wordCount,
     };
 
     return {

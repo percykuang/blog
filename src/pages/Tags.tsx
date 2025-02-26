@@ -39,7 +39,7 @@ const Tags: FC = () => {
           <li key={meta.name} className="m-2 ml-0 flex flex-[46%] items-center text-left">
             <TagIcon />
             <Link to={`/tags/${meta.name}`}>
-              <span className="hover:text-emerald-300 active:text-emerald-300">{meta.name}</span>
+              <span className="hover:text-[#3370FF] active:text-[#3370FF]">{meta.name}</span>
             </Link>
             <span className="relative left-[4px] top-[-6px] text-xs text-[#999]">{meta.count}</span>
           </li>

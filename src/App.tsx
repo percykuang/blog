@@ -3,6 +3,7 @@ import type { FC } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 
 import { TopNav } from '@/components';
+import ScrollToTop from '@/components/ScrollToTop';
 import { AboutMe, Detail, Home, TagDetail, Tags } from '@/pages';
 
 const App: FC = () => {
@@ -19,6 +20,7 @@ const App: FC = () => {
             <Route path="/about-me" element={<AboutMe />} />
           </Routes>
         </div>
+        <ScrollToTop />
       </div>
     </HashRouter>
   );

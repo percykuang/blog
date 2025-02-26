@@ -69,8 +69,11 @@ marked.use({
           </button><pre><code class="hljs language-${validLanguage}">${code.text}</code></pre>
         </div>`;
     },
-    codespan(text: Tokens.Codespan) {
-      return `<code class="inline-code">${text.text}</code>`;
+    codespan({ text }) {
+      return `<code class="inline-code">${text}</code>`;
+    },
+    link({ href, title, tokens }) {
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title}">${tokens?.[0]?.raw}</a>`;
     },
   },
 });
@@ -93,7 +96,7 @@ const Detail: FC = () => {
   return (
     <div className="mt-10">
       <h1 className="my-6 text-3xl font-bold">{article.title}</h1>
-      <div className="mb-4 text-sm text-stone-400">{`发布于 ${dayjs(article.date).format('YYYY.MM.DD')}`}</div>
+      <div className="mb-4 text-xs text-stone-400">{`发布于 ${dayjs(article.date).format('YYYY.MM.DD')} | 字数 ${article.wordCount}`}</div>
       <article
         className="prose prose-stone lg:prose-lg dark:prose-invert prose-headings:font-bold /* 只对标题使用粗体 */ prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 max-w-none !font-normal [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre_code]:!font-mono [&_pre_code]:!text-sm" /* 文章内容使用正常字重 */
         dangerouslySetInnerHTML={{

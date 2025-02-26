@@ -1,19 +1,9 @@
-/* 声明本地字体 */
+/* 声明本地中文字体 */
 @font-face {
   font-family: 'LXGW WenKai Lite';
   src:
     url('/fonts/LXGWWenKaiLite-Regular.woff2') format('woff2'),
     url('/fonts/LXGWWenKaiMonoLite-Regular.woff2') format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Input Mono';
-  src:
-    url('/fonts/InputMono-Regular.woff2') format('woff2'),
-    url('/fonts/InputMono-Regular.woff2') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -56,16 +46,14 @@
 
       & code.hljs {
         font-family:
-          Input Mono,
+          SF Mono,
           Menlo,
-          ui-monospace,
-          SFMono-Regular,
           Consolas,
           'Liberation Mono',
           'Courier New',
           monospace !important;
-        font-size: 0.875rem !important;
-        line-height: 1.5 !important;
+        font-size: 12px !important;
+        line-height: 20px !important;
         font-weight: normal !important;
         padding: 16px !important;
         border-radius: 6px !important;

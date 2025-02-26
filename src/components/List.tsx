@@ -26,7 +26,7 @@ const List: FC<ListProps> = ({ articles }) => {
           {yearArticles.map((article) => (
             <div key={article.title} className="flex justify-between justify-items-center pb-1">
               <Link to={`/articles/${article.id}`}>
-                <span className="hover:text-emerald-300 active:text-emerald-300">{article.title}</span>
+                <span className="hover:text-[#3370FF] active:text-[#3370FF]">{article.title}</span>
               </Link>
               <span className="inline-block w-20 text-right text-sm opacity-30">
                 {dayjs(article.date).format('MM.DD')}

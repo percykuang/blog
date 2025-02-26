@@ -7,13 +7,13 @@ const TopNav: FC = () => {
     <div className="flex flex-row-reverse max-md:mx-4 max-md:my-0 max-md:flex-row">
       <div className="flex text-slate-600">
         <Link to="/">
-          <span className="ml-5 hover:text-emerald-300 active:text-emerald-300 max-md:m-0 max-md:mr-5">文章</span>
+          <span className="ml-5 hover:text-[#3370FF] active:text-[#3370FF] max-md:m-0 max-md:mr-5">文章</span>
         </Link>
         <Link to="/tags">
-          <span className="ml-5 hover:text-emerald-300 active:text-emerald-300 max-md:m-0 max-md:mr-5">标签</span>
+          <span className="ml-5 hover:text-[#3370FF] active:text-[#3370FF] max-md:m-0 max-md:mr-5">标签</span>
         </Link>
         <Link to="/about-me">
-          <span className="ml-5 hover:text-emerald-300 active:text-emerald-300 max-md:m-0 max-md:mr-5">关于我</span>
+          <span className="ml-5 hover:text-[#3370FF] active:text-[#3370FF] max-md:m-0 max-md:mr-5">关于我</span>
         </Link>
       </div>
     </div>
