@@ -12,6 +12,7 @@
     "publish": "git add . && git commit -m 'feat: publish' && git push"
   },
   "dependencies": {
+    "@fancyapps/ui": "^5.0.36",
     "@tailwindcss/vite": "^4.0.8",
     "dayjs": "^1.11.13",
     "dompurify": "^3.2.4",

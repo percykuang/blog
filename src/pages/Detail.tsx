@@ -2,6 +2,8 @@ import { FC, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 
+import { Fancybox } from '@fancyapps/ui';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import dayjs from 'dayjs';
 import DOMPurify from 'dompurify';
 import hljs from 'highlight.js/lib/common';
@@ -79,6 +81,35 @@ marked.use({
     html({ text }) {
       return tagPurify(text);
     },
+    image({ href, title, text }) {
+      if (href?.match(/\.(mp4|webm|ogg)$/i)) {
+        return `
+          <a 
+            href="${href}" 
+            data-fancybox="gallery"
+            data-type="video"
+          >
+            <video class="w-full rounded-lg">
+              <source src="${href}" type="video/${href.split('.').pop()}" />
+            </video>
+          </a>
+        `;
+      }
+      return `
+        <a 
+          href="${href}" 
+          data-fancybox="gallery"
+        >
+          <img 
+            src="${href}" 
+            alt="${text || ''}" 
+            title="${title || ''}"
+            class="cursor-zoom-in rounded-lg"
+            loading="lazy"
+          />
+        </a>
+      `;
+    },
     link({ href, title, tokens }) {
       return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title}">${tokens?.[0]?.raw}</a>`;
     },
@@ -93,6 +124,39 @@ const Detail: FC = () => {
     const record = articleList.find((item) => item.id === params.id);
     setArticle(record);
   }, [params]);
+
+  useEffect(() => {
+    if (article) {
+      Fancybox.destroy();
+
+      Fancybox.bind(document.body, '[data-fancybox="gallery"]', {
+        compact: false,
+        idle: false,
+        wheel: 'zoom',
+        dragToClose: false,
+        contentClick: 'iterateZoom',
+        Hash: false,
+        Images: {
+          zoom: true,
+          Panzoom: {
+            maxScale: 5,
+          },
+        },
+        Toolbar: {
+          enabled: true,
+          display: {
+            left: ['infobar'],
+            middle: ['zoomIn', 'zoomOut', 'toggle1to1', 'rotateCCW', 'rotateCW', 'flipX', 'flipY'],
+            right: ['slideshow', 'thumbs', 'close'],
+          },
+        },
+      });
+
+      return () => {
+        Fancybox.destroy();
+      };
+    }
+  }, [article]);
 
   if (!article) {
     return <NotFound message="文章地址已改变，请回到主页重新浏览" />;
