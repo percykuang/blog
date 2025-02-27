@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import dayjs from 'dayjs';
+import DOMPurify from 'dompurify';
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
 import { Tokens, marked } from 'marked';
@@ -11,6 +12,7 @@ import { markedHighlight } from 'marked-highlight';
 import articleList from '@/articles.json';
 import { NotFound } from '@/components';
 import type { Article } from '@/types';
+import { tagPurify } from '@/utils';
 
 // 配置 marked
 marked.use(
@@ -71,14 +73,11 @@ marked.use({
         </div>`;
     },
     codespan({ text }) {
-      // 进行转译、防止 XSS 注入
-      const escaped = text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+      const escaped = tagPurify(text);
       return `<code class="inline-code">${escaped}</code>`;
+    },
+    html({ text }) {
+      return tagPurify(text);
     },
     link({ href, title, tokens }) {
       return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title}">${tokens?.[0]?.raw}</a>`;
@@ -106,7 +105,7 @@ const Detail: FC = () => {
       <article
         className="prose prose-stone lg:prose-lg dark:prose-invert prose-headings:font-bold /* 只对标题使用粗体 */ prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 max-w-none !font-normal [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre_code]:!font-mono [&_pre_code]:!text-sm" /* 文章内容使用正常字重 */
         dangerouslySetInnerHTML={{
-          __html: marked.parse(article.content),
+          __html: DOMPurify.sanitize(marked.parse(article.content) as string),
         }}
       />
       <footer></footer>

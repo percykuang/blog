@@ -8,8 +8,6 @@ import { List } from '@/components';
 const TagDetail: FC = () => {
   const { tag } = useParams<{ tag: string }>(); // 获取 URL 中的标签参数
   const filteredArticles = articleList.filter((article) => article.tags.includes(tag || ''));
-  console.log('filteredArticles', articleList, filteredArticles);
-
   return <List articles={filteredArticles} />;
 };
 
