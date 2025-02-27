@@ -8,10 +8,10 @@
 1. 将数据集中在一个 store 对象
 2. 将所有操作集中在 reducer
 3. 创建一个 Context
-4. 创建对数据的读写API
-5. 将第4步的内容放到第3步的Context
-6. 用Context.Provider将Context提供给所有组件
-7. 各个组件用useContext获取读写API
+4. 创建对数据的读写 API
+5. 将第4步的内容放到第 3 步的 Context 中
+6. 用 Context.Provider 将 Context 提供给所有组件
+7. 各个组件用 useContext 获取读写 API
 
 代码演示：
 
@@ -114,6 +114,6 @@ function App() {
 export default App;
 ```
 
-如何对reducer进行拆分？
+如何对 reducer 进行拆分？
 
-答：可将reducer写成多个对象的形式，合并所有的子reducer时只需要{...reducer1, ...reducer2, ...}即可
+答：可将 reducer 写成多个对象的形式，合并所有的子 reducer 时只需要 `{...reducer1, ...reducer2, ...}` 即可

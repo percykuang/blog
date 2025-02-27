@@ -7,8 +7,8 @@
 2. background 法
 3. background 合一法
 4. font 法
-5. SVG 法
-6. CSS 就是干法
+5. svg-symbol 法
+6. css 就是干法
 
 ### img 法
 
@@ -35,7 +35,7 @@
 
 注意：一般来说，字体图标的 Entity Number 一般都以`&#xe6`开头，因为这一段范围通常不表示任何字符
 
-- inconfont 的 HTML 形式（对应 iconfont.cn 里的 Unicode 功能）
+- inconfont 的 HTML 形式（对应 iconfont.cn 里的 unicode 功能）
 
 用法：
 
@@ -86,7 +86,7 @@
 <div class="xxx" style="font-family: iconfont;"></div>
 ```
 
-### SVG-symbol 法
+### svg-symbol 法
 
 这种方式是最推荐的做法。与以上方式相比有如下特点：
 
@@ -127,8 +127,8 @@
 
 ### 「CSS 就是干」法
 
-纯css技巧来实现icon。
+纯 css 技巧来实现 icon。
 
-推荐一个网站，这个网站是一个设计师写的，全是用css实现的icon。
+推荐一个网站，这个网站是一个设计师写的，全是用 css 实现的 icon。
 
 https://cssicon.space

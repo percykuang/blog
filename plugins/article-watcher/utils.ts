@@ -1,12 +1,6 @@
-import DOMPurify from 'dompurify';
-import { JSDOM } from 'jsdom';
 import sortBy from 'lodash/sortBy';
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-
-// 初始化 DOMPurify
-const window = new JSDOM('').window;
-const purify = DOMPurify(window);
 
 // 生成唯一且稳定的数据ID
 function generateStableId(data: any): string {
@@ -62,16 +56,14 @@ export function generateArticleList() {
     const tags = parseTags(tagLine);
     const fileContent = lines.slice(2).join('\n');
 
-    // 在这里清理内容
-    const sanitizedContent = purify.sanitize(fileContent);
-    const wordCount = countWords(sanitizedContent);
+    const wordCount = countWords(fileContent);
 
     const data = {
       title: fileName.replace('.md', ''),
       date,
       tags,
       fileName,
-      content: sanitizedContent,
+      content: fileContent,
       wordCount,
     };
 
