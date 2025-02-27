@@ -40,7 +40,7 @@ app.listen(3000, () => console.log('服务已开启！'));
 
 ![1.png](https://free4.yunpng.top/2025/02/27/67bfb1b1c37a5.png)
 
-因此，我们需要对平面对象进行转换，才可结合class-validator对类属性信息进行约束。
+因此，我们需要对平面对象进行转换，才可结合 class-validator 对类属性信息进行约束。
 
 ## 安装
 
@@ -111,9 +111,9 @@ validate(newArticle).then((errors) => {
 
 ![3.png](https://free4.yunpng.top/2025/02/27/67bfb1ec0579f.png)
 
-这里可以看出，虽然数据类型对于不上，但还是验证通过了。所以，我们需要使用class-transform提供给我们的运行时的类型验证。
+这里可以看出，虽然数据类型对于不上，但还是验证通过了。所以，我们需要使用 class-transform 提供给我们的运行时的类型验证。
 
-## 使用装饰器@Type进行运行时的类型约束
+## 使用装饰器 @Type 进行运行时的类型约束
 
 1. 安装reflect-metadata
 
@@ -172,4 +172,4 @@ export default Article
 
 ![4.png](https://free4.yunpng.top/2025/02/27/67bfb1ec05754.png)
 
-可以看出，已经将数字类型的title转为了字符串类型，同时也通过了验证。
+可以看出，已经将数字类型的 title 转为了字符串类型，同时也通过了验证。
