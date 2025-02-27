@@ -12,7 +12,7 @@ import { Tokens, marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 
 import articleList from '@/articles.json';
-import { NotFound } from '@/components';
+import { ArticleOutline, NotFound } from '@/components';
 import type { Article } from '@/types';
 import { tagPurify } from '@/utils';
 
@@ -113,16 +113,33 @@ marked.use({
     link({ href, title, tokens }) {
       return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title}">${tokens?.[0]?.raw}</a>`;
     },
+    heading({ text, depth }) {
+      const id = text.toLowerCase().replace(/[^a-zA-Z0-9\u4e00-\u9fa5]+/g, '-');
+      return `<h${depth} id="${id}">${text}</h${depth}>`;
+    },
   },
 });
 
 const Detail: FC = () => {
   const params = useParams();
   const [article, setArticle] = useState<Article>();
+  const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
 
   useEffect(() => {
     const record = articleList.find((item) => item.id === params.id);
     setArticle(record);
+
+    if (record) {
+      const tokens = marked.lexer(record.content);
+      const headers = tokens
+        .filter((token): token is Tokens.Heading => token.type === 'heading' && token.depth >= 2)
+        .map((token) => ({
+          id: token.text.toLowerCase().replace(/[^a-zA-Z0-9\u4e00-\u9fa5]+/g, '-'),
+          text: token.text,
+          level: token.depth,
+        }));
+      setHeadings(headers);
+    }
   }, [params]);
 
   useEffect(() => {
@@ -164,15 +181,21 @@ const Detail: FC = () => {
 
   return (
     <div className="mt-10">
-      <h1 className="my-6 text-3xl font-bold">{article.title}</h1>
-      <div className="mb-4 text-xs text-stone-400">{`发布于 ${dayjs(article.date).format('YYYY.MM.DD')} | 字数 ${article.wordCount}`}</div>
-      <article
-        className="prose prose-stone lg:prose-lg dark:prose-invert prose-headings:font-bold /* 只对标题使用粗体 */ prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 max-w-none !font-normal [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre_code]:!font-mono [&_pre_code]:!text-sm" /* 文章内容使用正常字重 */
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(marked.parse(article.content) as string),
-        }}
-      />
-      <footer></footer>
+      <div className="relative">
+        <ArticleOutline headings={headings} />
+        <div className="max-w-192 mx-auto">
+          <h1 className="my-6 text-3xl font-bold">{article.title}</h1>
+          <div className="mb-4 text-xs text-stone-400">
+            {`发布于 ${dayjs(article.date).format('YYYY.MM.DD')} | 字数 ${article.wordCount}`}
+          </div>
+          <article
+            className="prose prose-stone lg:prose-lg dark:prose-invert prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 max-w-none !font-normal [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre_code]:!font-mono [&_pre_code]:!text-sm"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(marked.parse(article.content) as string),
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
