@@ -2,8 +2,7 @@ import type { FC } from 'react';
 
 import { HashRouter, Route, Routes } from 'react-router-dom';
 
-import { TopNav } from '@/components';
-import ScrollToTop from '@/components/ScrollToTop';
+import { BackTop, NotFound, TopNav } from '@/components';
 import { AboutMe, Detail, Home, TagDetail, Tags } from '@/pages';
 
 const App: FC = () => {
@@ -18,9 +17,10 @@ const App: FC = () => {
             <Route path="/tags/:tag" element={<TagDetail />} />
             <Route path="/articles/:id" element={<Detail />} />
             <Route path="/about-me" element={<AboutMe />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
-        <ScrollToTop />
+        <BackTop />
       </div>
     </HashRouter>
   );

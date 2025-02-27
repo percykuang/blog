@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const ScrollToTop: React.FC = () => {
+const BackTop: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const toggleVisibility = () => {
@@ -35,4 +35,4 @@ const ScrollToTop: React.FC = () => {
   );
 };
 
-export default ScrollToTop;
+export default BackTop;

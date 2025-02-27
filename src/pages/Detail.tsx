@@ -9,6 +9,7 @@ import { Tokens, marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 
 import articleList from '@/articles.json';
+import { NotFound } from '@/components';
 import type { Article } from '@/types';
 
 // 配置 marked
@@ -70,7 +71,14 @@ marked.use({
         </div>`;
     },
     codespan({ text }) {
-      return `<code class="inline-code">${text}</code>`;
+      // 进行转译、防止 XSS 注入
+      const escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+      return `<code class="inline-code">${escaped}</code>`;
     },
     link({ href, title, tokens }) {
       return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title}">${tokens?.[0]?.raw}</a>`;
@@ -82,15 +90,13 @@ const Detail: FC = () => {
   const params = useParams();
   const [article, setArticle] = useState<Article>();
 
-  console.log('params', params, article?.content);
-
   useEffect(() => {
     const record = articleList.find((item) => item.id === params.id);
     setArticle(record);
   }, [params]);
 
   if (!article) {
-    return <div>404</div>;
+    return <NotFound message="文章地址已改变，请回到主页重新浏览" />;
   }
 
   return (
