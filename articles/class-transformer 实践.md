@@ -38,7 +38,7 @@ app.listen(3000, () => console.log('服务已开启！'));
 
 运行结果（没有捕获到任何信息）：
 
-![2.png](https://upload-images.jianshu.io/upload_images/17962931-c94b143ee9f65491.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![1.png](https://free4.yunpng.top/2025/02/27/67bfb1b1c37a5.png)
 
 因此，我们需要对平面对象进行转换，才可结合class-validator对类属性信息进行约束。
 
@@ -80,7 +80,7 @@ app.listen(3000, () => console.log('服务已开启！'));
 
 运行结果:
 
-![3.png](https://upload-images.jianshu.io/upload_images/17962931-a4ee172b3fc8410a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![2.png](https://free4.yunpng.top/2025/02/27/67bfb1b1ad296.png)
 
 ## 没这么简单
 
@@ -109,7 +109,7 @@ validate(newArticle).then((errors) => {
 
 运行结果：
 
-![4.png](https://upload-images.jianshu.io/upload_images/17962931-4b61bf847fc0a54a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![3.png](https://free4.yunpng.top/2025/02/27/67bfb1ec0579f.png)
 
 这里可以看出，虽然数据类型对于不上，但还是验证通过了。所以，我们需要使用class-transform提供给我们的运行时的类型验证。
 
@@ -170,6 +170,6 @@ export default Article
 
 4. 运行结果
 
-![5.png](https://upload-images.jianshu.io/upload_images/17962931-902e0916bb634436.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![4.png](https://free4.yunpng.top/2025/02/27/67bfb1ec05754.png)
 
 可以看出，已经将数字类型的title转为了字符串类型，同时也通过了验证。
