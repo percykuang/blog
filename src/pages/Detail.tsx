@@ -182,9 +182,11 @@ const Detail: FC = () => {
   return (
     <div className="mt-10">
       <div className="relative">
-        <ArticleOutline headings={headings} />
+        <ArticleOutline headings={headings} title={article.title} />
         <div className="max-w-192 mx-auto">
-          <h1 className="my-6 text-3xl font-bold">{article.title}</h1>
+          <h1 id="article-title" className="my-6 text-3xl font-bold">
+            {article.title}
+          </h1>
           <div className="mb-4 text-xs text-stone-400">
             {`发布于 ${dayjs(article.date).format('YYYY.MM.DD')} | 字数 ${article.wordCount}`}
           </div>

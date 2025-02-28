@@ -9,32 +9,34 @@ interface ArticleOutlineItem {
 
 interface ArticleOutlineProps {
   headings: ArticleOutlineItem[];
+  title: string;
 }
 
-const ArticleOutline: FC<ArticleOutlineProps> = ({ headings }) => {
+const ArticleOutline: FC<ArticleOutlineProps> = ({ headings, title }) => {
   const [activeId, setActiveId] = useState<string>('');
   const SCROLL_OFFSET = 96;
+  const titleId = 'article-title';
 
   useEffect(() => {
     const handleScroll = () => {
-      // 获取所有标题元素的位置信息
-      const headingElements = headings
-        .map(({ id }) => {
-          const element = document.getElementById(id);
-          if (element) {
-            return {
-              id,
-              top: element.getBoundingClientRect().top,
-            };
-          }
-          return null;
-        })
-        .filter((item): item is { id: string; top: number } => item !== null);
+      const headingElements = [
+        { id: titleId, top: document.getElementById(titleId)?.getBoundingClientRect().top ?? 0 },
+        ...headings
+          .map(({ id }) => {
+            const element = document.getElementById(id);
+            if (element) {
+              return {
+                id,
+                top: element.getBoundingClientRect().top,
+              };
+            }
+            return null;
+          })
+          .filter((item): item is { id: string; top: number } => item !== null),
+      ];
 
-      // 找到第一个还没有越过指定偏移位置的标题
       const currentHeading = headingElements.find((heading) => heading.top >= SCROLL_OFFSET);
 
-      // 如果所有标题都已越过偏移位置，则选择最后一个标题
       if (currentHeading) {
         setActiveId(currentHeading.id);
       } else if (headingElements.length > 0) {
@@ -43,7 +45,7 @@ const ArticleOutline: FC<ArticleOutlineProps> = ({ headings }) => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // 初始化时执行一次
+    handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -59,15 +61,27 @@ const ArticleOutline: FC<ArticleOutlineProps> = ({ headings }) => {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth',
       });
     }
+  };
+
+  const handleTitleClick = () => {
+    window.scrollTo({
+      top: 0,
+    });
   };
 
   return (
     <nav className="fixed left-8 top-[7.5rem] hidden w-64 lg:block">
       <div className="p-4">
-        <h3 className="mb-2 text-sm font-medium text-gray-500">目录</h3>
+        <h3
+          className={`mb-2 cursor-pointer text-base font-medium transition-colors hover:text-[#3370ff] ${
+            activeId === titleId ? 'text-[#3370ff]' : 'text-gray-500'
+          }`}
+          onClick={handleTitleClick}
+        >
+          {title}
+        </h3>
         <ul className="scrollbar-custom max-h-[calc(100vh-12rem)] overflow-auto">
           {headings.map((heading) => (
             <li

@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import { HashRouter, Route, Routes } from 'react-router-dom';
 
-import { BackTop, NotFound, TopNav } from '@/components';
+import { NotFound, TopNav } from '@/components';
 import { AboutMe, Detail, Home, TagDetail, Tags } from '@/pages';
 
 const App: FC = () => {
@@ -20,7 +20,6 @@ const App: FC = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
-        <BackTop />
       </div>
     </HashRouter>
   );
