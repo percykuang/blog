@@ -14,11 +14,15 @@ interface ArticleOutlineProps {
 
 const ArticleOutline: FC<ArticleOutlineProps> = ({ headings, title }) => {
   const [activeId, setActiveId] = useState<string>('');
+  const [isSticky, setIsSticky] = useState(false);
   const SCROLL_OFFSET = 96;
   const titleId = 'article-title';
 
   useEffect(() => {
     const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsSticky(scrollTop > 120);
+
       const headingElements = [
         { id: titleId, top: document.getElementById(titleId)?.getBoundingClientRect().top ?? 0 },
         ...headings
@@ -72,7 +76,9 @@ const ArticleOutline: FC<ArticleOutlineProps> = ({ headings, title }) => {
   };
 
   return (
-    <nav className="fixed left-8 top-[7.5rem] hidden w-64 lg:block">
+    <nav
+      className={`fixed left-8 hidden w-64 transition-all duration-300 lg:block ${isSticky ? 'top-4' : 'top-[7.5rem]'}`}
+    >
       <div className="p-4">
         <h3
           className={`mb-2 cursor-pointer text-base font-medium transition-colors hover:text-[#3370ff] ${
@@ -82,7 +88,7 @@ const ArticleOutline: FC<ArticleOutlineProps> = ({ headings, title }) => {
         >
           {title}
         </h3>
-        <ul className="scrollbar-custom max-h-[calc(100vh-12rem)] overflow-auto">
+        <ul className="scrollbar-custom max-h-[calc(100vh-4rem)] overflow-auto">
           {headings.map((heading) => (
             <li
               key={heading.id}
