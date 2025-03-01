@@ -124,24 +124,20 @@ marked.use({
 const Detail: FC = () => {
   const params = useParams();
   const [article, setArticle] = useState<Article>();
-  const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
+
+    if (!params.id) {
+      setIsLoading(false);
+      return;
+    }
+
     const record = articleList.find((item) => item.id === params.id);
     setArticle(record);
-
-    if (record) {
-      const tokens = marked.lexer(record.content);
-      const headers = tokens
-        .filter((token): token is Tokens.Heading => token.type === 'heading' && token.depth >= 2)
-        .map((token) => ({
-          id: token.text.toLowerCase().replace(/[^a-zA-Z0-9\u4e00-\u9fa5]+/g, '-'),
-          text: token.text,
-          level: token.depth,
-        }));
-      setHeadings(headers);
-    }
-  }, [params]);
+    setIsLoading(false);
+  }, [params.id]);
 
   useEffect(() => {
     if (article) {
@@ -176,13 +172,11 @@ const Detail: FC = () => {
     }
   }, [article]);
 
-  // 使用 useMemo 缓存解析后的内容
   const parsedContent = useMemo(() => {
     if (!article) return '';
     return DOMPurify.sanitize(marked.parse(article.content) as string);
   }, [article]);
 
-  // 使用 useMemo 缓存解析后的标题
   const parsedHeadings = useMemo(() => {
     if (!article) return [];
     const tokens = marked.lexer(article.content);
@@ -194,6 +188,10 @@ const Detail: FC = () => {
         level: token.depth,
       }));
   }, [article]);
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!article) {
     return <NotFound message="文章地址已改变，请回到主页重新浏览" />;

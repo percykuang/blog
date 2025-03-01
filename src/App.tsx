@@ -6,7 +6,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import { Loading, NotFound, TopNav } from '@/components';
 import { AboutMe, Home, TagDetail, Tags } from '@/pages';
 
-// 懒加载详情页面组件
+// 只对文章详情页进行懒加载
 const Detail = lazy(() => import('@/pages/Detail'));
 
 const App: FC = () => {
@@ -17,8 +17,8 @@ const App: FC = () => {
         <div className="max-md:mx-4 max-md:my-0">
           <Suspense
             fallback={
-              <div className="mt-30 flex items-center justify-center">
-                <Loading />
+              <div className="mt-32 flex items-center justify-center">
+                <Loading size={32} />
               </div>
             }
           >
