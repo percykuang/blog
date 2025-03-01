@@ -1,0 +1,1 @@
+import{u as a,j as e}from"./index-CBy14FVT.js";import{a as i}from"./articles-BScmPOTr.js";import{L as o}from"./List-0LCVCwAz.js";const f=()=>{const{tag:t}=a(),s=i.filter(r=>r.tags.includes(t||""));return e.jsx(o,{articles:s})};export{f as default};

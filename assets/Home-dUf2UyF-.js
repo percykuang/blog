@@ -1,0 +1,1 @@
+import{r as t,j as e}from"./index-CBy14FVT.js";import{a as o}from"./articles-BScmPOTr.js";import{L as a}from"./List-0LCVCwAz.js";const f=()=>{const[s,r]=t.useState([]);return t.useEffect(()=>{r(o)},[]),e.jsx(a,{articles:s})};export{f as default};
