@@ -3,14 +3,11 @@ import { Suspense, lazy } from 'react';
 
 import { HashRouter, Route, Routes } from 'react-router-dom';
 
-import { NotFound, TopNav } from '@/components';
+import { Loading, NotFound, TopNav } from '@/components';
+import { AboutMe, Home, TagDetail, Tags } from '@/pages';
 
-// 懒加载页面组件
-const Home = lazy(() => import('@/pages/Home'));
-const Tags = lazy(() => import('@/pages/Tags'));
-const TagDetail = lazy(() => import('@/pages/TagDetail'));
+// 懒加载详情页面组件
 const Detail = lazy(() => import('@/pages/Detail'));
-const AboutMe = lazy(() => import('@/pages/AboutMe'));
 
 const App: FC = () => {
   return (
@@ -18,7 +15,13 @@ const App: FC = () => {
       <div className="max-w-192 mx-auto mb-0 mt-10 pb-20">
         <TopNav />
         <div className="max-md:mx-4 max-md:my-0">
-          <Suspense fallback={<div className="mt-10 text-center">Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="mt-30 flex items-center justify-center">
+                <Loading />
+              </div>
+            }
+          >
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/tags" element={<Tags />} />
