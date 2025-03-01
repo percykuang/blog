@@ -1,4 +1,5 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { FC } from 'react';
 
 import { useParams } from 'react-router-dom';
 
@@ -175,6 +176,25 @@ const Detail: FC = () => {
     }
   }, [article]);
 
+  // 使用 useMemo 缓存解析后的内容
+  const parsedContent = useMemo(() => {
+    if (!article) return '';
+    return DOMPurify.sanitize(marked.parse(article.content) as string);
+  }, [article]);
+
+  // 使用 useMemo 缓存解析后的标题
+  const parsedHeadings = useMemo(() => {
+    if (!article) return [];
+    const tokens = marked.lexer(article.content);
+    return tokens
+      .filter((token): token is Tokens.Heading => token.type === 'heading' && token.depth >= 2)
+      .map((token) => ({
+        id: token.text.toLowerCase().replace(/[^a-zA-Z0-9\u4e00-\u9fa5]+/g, '-'),
+        text: token.text,
+        level: token.depth,
+      }));
+  }, [article]);
+
   if (!article) {
     return <NotFound message="文章地址已改变，请回到主页重新浏览" />;
   }
@@ -182,7 +202,7 @@ const Detail: FC = () => {
   return (
     <div className="mt-10">
       <div className="relative">
-        <ArticleOutline headings={headings} title={article.title} />
+        <ArticleOutline headings={parsedHeadings} title={article.title} />
         <div className="max-w-192 mx-auto">
           <h1 id="article-title" className="my-6 text-3xl font-bold">
             {article.title}
@@ -193,7 +213,7 @@ const Detail: FC = () => {
           <article
             className="prose prose-stone lg:prose-lg dark:prose-invert prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 max-w-none !font-normal [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre_code]:!font-mono [&_pre_code]:!text-sm"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(marked.parse(article.content) as string),
+              __html: parsedContent,
             }}
           />
         </div>
