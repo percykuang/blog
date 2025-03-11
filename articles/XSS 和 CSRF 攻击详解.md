@@ -187,6 +187,6 @@ if (req.headers.referer !== 'https://trusted-domain.com') {
 
 ## 总结
 
-- **XSS** 的核心是防止恶意脚本执行，需重点关注**输出编码**和**CSP 策略**。
-- **CSRF** 的核心是验证请求是否由用户主动发起，需依赖**CSRF Token** 和 **SameSite Cookie**。
+- **XSS** 的核心是防止恶意脚本执行，需重点关注**输出编码**和 **CSP 策略**。
+- **CSRF** 的核心是验证请求是否由用户主动发起，需依赖 **CSRF Token** 和 **SameSite Cookie**。
 - 安全是系统工程，需前后端协作，结合多种防御手段降低风险。
