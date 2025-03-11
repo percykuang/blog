@@ -9,50 +9,60 @@ XSS（Cross-Site Scripting）攻击的核心是让恶意脚本在受害者的浏
 
 ### 攻击类型
 
-1. 反射型 XSS
+- 反射型 XSS
 
-- **原理**：恶意脚本通过 URL 参数注入，服务端未过滤直接返回给客户端。
-  - 例如：用户点击一个精心构造的链接：
-  ```http
-  https://example.com/search?query=<script>alert('XSS')</script>
-  ```
-  - 服务端将`query`参数直接插入到页面中，导致脚本执行。
-- **特点**：需要诱导用户主动点击恶意链接，常见于钓鱼攻击。
+**原理**：恶意脚本通过 URL 参数注入，服务端未过滤直接返回给客户端。
 
-2. 存储型 XSS
+例如：用户点击一个精心构造的链接：
 
-- **原理**：恶意脚本被存储到服务器数据库（如评论、留言板），其他用户访问页面时触发。
-  - 例如：攻击者在评论区提交内容：
-  ```html
-  <script>
-    stealCookie(document.cookie);
-  </script>
-  ```
-  - 所有用户访问该页面时，脚本自动执行，窃取 Cookie。
-- **特点**：危害范围广，持续时间长（数据长期存储在服务端）。
+```
+https://example.com/search?query=<script>alert('XSS')</script>
+```
 
-3. DOM 型 XSS
+服务端将`query`参数直接插入到页面中，导致脚本执行
 
-- **原理**：前端 JavaScript 动态操作 DOM 时未对用户输入转义，导致恶意脚本执行。
-  - 例如：面通过 location.hash 获取 URL 片段并插入到 DOM 中：
-  ```js
-  document.getElementById('content').innerHTML = location.hash.substring(1);
-  ```
-  - 攻击者构造 URL：
-  ```
-  https://example.com#<img src=x onerror=alert('XSS')>
-  ```
-  - 用户访问该 URL 时，恶意脚本执行。
-- **特点**：完全在客户端触发，无需服务端参与。
+**特点**：需要诱导用户主动点击恶意链接，常见于钓鱼攻击。
+
+- 存储型 XSS
+
+**原理**：恶意脚本被存储到服务器数据库（如评论、留言板），其他用户访问页面时触发。
+
+例如：攻击者在评论区提交内容：
+
+```html
+<script>
+  stealCookie(document.cookie);
+</script>
+```
+
+所有用户访问该页面时，脚本自动执行，窃取 Cookie。
+
+**特点**：危害范围广，持续时间长（数据长期存储在服务端）。
+
+- DOM 型 XSS
+
+**原理**：前端 JavaScript 动态操作 DOM 时未对用户输入转义，导致恶意脚本执行。
+
+例如：面通过 location.hash 获取 URL 片段并插入到 DOM 中：
+
+```js
+document.getElementById('content').innerHTML = location.hash.substring(1);
+```
+
+攻击者构造 URL：
+
+```
+https://example.com#<img src=x onerror=alert('XSS')>
+```
+
+用户访问该 URL 时，恶意脚本执行。
+**特点**：完全在客户端触发，无需服务端参与。
 
 ### 攻击危害
 
 - 窃取用户 Cookie 或会话信息（Session Hijacking）。
-
 - 伪造用户操作（如转账、修改密码）。
-
 - 篡改页面内容（如插入钓鱼表单）。
-
 - 劫持用户浏览器（如发起 DDoS 攻击）。
 
 ### 防御措施
@@ -90,7 +100,6 @@ Content-Security-Policy: default-src 'self'; script-src 'self' https://trusted.c
 ```
 
 - 禁止内联脚本（unsafe-inline）和 eval。
-
 - 仅允许加载指定域名的脚本、样式、图片等资源。
 
 #### 安全的 Cookie 设置
@@ -104,7 +113,6 @@ Set-Cookie: sessionId=abc123; HttpOnly; Secure; SameSite=Lax;
 ### 避免危险 API
 
 - 使用 textContent 替代 innerHTML。
-
 - 避免直接执行用户输入的字符串（如 eval）。
 
 ## CSRF （跨站请求伪造）
@@ -127,7 +135,6 @@ CSRF（Cross-Site Request Forgery）攻击的核心是利用用户的登录状�
 ### 攻击危害
 
 - 以用户身份执行敏感操作（如转账、删除数据）。
-
 - 修改用户账户信息（如邮箱、密码）。
 
 ### 防御措施
