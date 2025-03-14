@@ -7,7 +7,7 @@ SourceMap 是一种将压缩、合并或转译后的代码映射回原始源代�
 
 ## SourceMap 的核心组成
 
-一个 SourceMap 文件（通常是 `.map`` 后缀）包含以下关键信息（类似于一个 JSON 的格式，具有以下 6 个字段）：
+一个 SourceMap 文件（通常是 `.map` 后缀）包含以下关键信息（类似于一个 JSON 的格式，具有以下 6 个字段）：
 
 1. **版本（version）**：当前 SourceMap 的版本（如 3）。
 2. **文件（file）**：生成的压缩文件名（如 bundle.min.js）。

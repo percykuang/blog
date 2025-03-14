@@ -77,7 +77,7 @@ const ArticleOutline: FC<ArticleOutlineProps> = ({ headings, title }) => {
 
   return (
     <nav
-      className={`fixed left-8 hidden w-64 transition-all duration-300 lg:block ${isSticky ? 'top-4' : 'top-[7.5rem]'}`}
+      className={`fixed left-8 hidden w-64 transition-all duration-300 xl:block ${isSticky ? 'top-4' : 'top-[7.5rem]'}`}
     >
       <div className="p-4">
         <h3
