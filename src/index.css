@@ -37,8 +37,25 @@
 @layer components {
   .prose {
     font-size: 16px !important;
+    /* 在 Tailwind Typography 的暗色模式自动切换上显示有问题，通过样式覆盖来解决这个问题 */
     --tw-prose-body: inherit !important;
     --tw-prose-headings: inherit !important;
+    --tw-prose-lead: inherit !important;
+    --tw-prose-links: inherit !important;
+    --tw-prose-bold: inherit !important;
+    --tw-prose-counters: inherit !important;
+    --tw-prose-bullets: inherit !important;
+    --tw-prose-hr: inherit !important;
+    --tw-prose-quotes: inherit !important;
+    --tw-prose-quote-borders: inherit !important;
+    --tw-prose-captions: inherit !important;
+    --tw-prose-kbd: inherit !important;
+    --tw-prose-kbd-shadow: inherit !important;
+    --tw-prose-code: inherit !important;
+    --tw-prose-pre-code: inherit !important;
+    --tw-prose-pre-bg: inherit !important;
+    --tw-prose-th-borders: inherit !important;
+    --tw-prose-td-borders: inherit !important;
 
     /* 代码块样式 (用三个反引号包裹的) */
     & pre {
