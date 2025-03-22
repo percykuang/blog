@@ -37,6 +37,8 @@
 @layer components {
   .prose {
     font-size: 16px !important;
+    --tw-prose-body: inherit !important;
+    --tw-prose-headings: inherit !important;
 
     /* 代码块样式 (用三个反引号包裹的) */
     & pre {
