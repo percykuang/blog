@@ -13,12 +13,14 @@ import { Tokens, marked } from 'marked';
 import articleList from '@/articles.json';
 import { ArticleOutline, NotFound } from '@/components';
 import { MARKED_CONFIG, MARKED_HIGHLIGHT_CONFIG, MARKED_RENDERER_CONFIG } from '@/config';
+import { useCopy } from '@/hooks';
 import type { Article } from '@/types';
 
 // 配置高亮
 marked.use(MARKED_HIGHLIGHT_CONFIG);
 
 const Detail: FC = () => {
+  const { registerCopy, unregisterCopy } = useCopy();
   const params = useParams();
   const [article, setArticle] = useState<Article>();
   const [isLoading, setIsLoading] = useState(true);
@@ -63,8 +65,12 @@ const Detail: FC = () => {
         },
       });
 
+      // 为所有复制按钮添加事件监听
+      registerCopy();
+
       return () => {
         Fancybox.destroy();
+        unregisterCopy();
       };
     }
   }, [article]);

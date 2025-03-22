@@ -4,6 +4,7 @@ import 'highlight.js/styles/github.css';
 import { MarkedExtension, RendererObject, Tokens } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 
+import { COPY_CLASS_NAME } from '@/hooks';
 import { tagPurify } from '@/utils';
 
 export const MARKED_HIGHLIGHT_CONFIG = markedHighlight({
@@ -21,41 +22,16 @@ export const MARKED_RENDERER_CONFIG: RendererObject = {
     return `
       <div class="relative group">
         <button
-          class="hover:cursor-pointer
+          class="${COPY_CLASS_NAME} hover:cursor-pointer
           absolute right-2 top-2 opacity-0
           group-hover:opacity-100 transition-opacity
           duration-200 px-2 py-1 rounded text-sm
           bg-white/10 hover:bg-white/20 text-gray-400
           hover:text-gray-300"
-          onclick="(function(btn){
-            const code = btn.parentElement.querySelector('code').textContent;
-            if (navigator.clipboard && window.isSecureContext) {
-              navigator.clipboard.writeText(code).then(() => {
-                btn.textContent = '复制成功！';
-                setTimeout(() => btn.textContent = '复制', 1000);
-              });
-            } else {
-              const textArea = document.createElement('textarea');
-              textArea.value = code;
-              textArea.style.position = 'fixed';
-              textArea.style.left = '-999999px';
-              document.body.appendChild(textArea);
-              textArea.select();
-              try {
-                document.execCommand('copy');
-                btn.textContent = '复制成功！';
-                setTimeout(() => btn.textContent = '复制', 1000);
-              } catch (error) {
-                console.error('Copy failed', error);
-                btn.textContent = '复制失败！';
-                setTimeout(() => btn.textContent = '复制', 1000);
-              } finally {
-                textArea.remove();
-              }
-            }
-          })(this)">
+        >
           复制
-        </button><pre><code class="hljs language-${validLanguage}">${code.text}</code></pre>
+        </button>
+        <pre><code class="hljs language-${validLanguage}">${code.text}</code></pre>
       </div>`;
   },
   codespan({ text }) {
