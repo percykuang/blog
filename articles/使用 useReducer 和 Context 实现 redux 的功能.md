@@ -1,5 +1,5 @@
 @date: 2020-07-24
-@tag: [react, redux]
+@tag: [react, redux, 状态管理]
 
 ## 使用 useReducer 和 Context 实现 redux 的功能
 
