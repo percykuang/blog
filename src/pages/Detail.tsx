@@ -120,7 +120,9 @@ const Detail: FC = () => {
     });
 
     // 渲染内容
-    const content = DOMPurify.sanitize(marked.parse(article.content) as string);
+    const content = DOMPurify.sanitize(marked.parse(article.content) as string, {
+      ADD_ATTR: ['target'], // 允许 target 属性
+    });
 
     return {
       content,
