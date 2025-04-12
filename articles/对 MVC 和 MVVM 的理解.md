@@ -1,5 +1,5 @@
 @date: 2020-09-13
-@tag: [软件架构, react, vue]
+@tag: [软件架构,react,vue]
 
 ## MVC（Model-View-Controller）与 React
 

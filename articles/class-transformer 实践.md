@@ -1,5 +1,5 @@
 @date: 2020-12-14
-@tag: [typescript, class-transformer]
+@tag: [typescript,class-transformer]
 
 ## 为什么要使用这个库
 

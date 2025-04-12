@@ -1,5 +1,5 @@
 @date: 2020-10-25
-@tag: [javascript, es6]
+@tag: [javascript,es6]
 
 ## 基本概念
 

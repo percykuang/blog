@@ -1,5 +1,5 @@
 @date: 2020-10-21
-@tag: [javascript, es6]
+@tag: [javascript,es6]
 
 ## 前言
 

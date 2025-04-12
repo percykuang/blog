@@ -1,5 +1,5 @@
 @date: 2020-09-27
-@tag: [javascript, es6]
+@tag: [javascript,es6]
 
 ## Set
 
