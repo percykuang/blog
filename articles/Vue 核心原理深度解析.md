@@ -320,10 +320,165 @@ app.mount('#app');
 
 ### 1. 编译时优化
 
-- 静态树提升（Static Tree Hoisting）
-- 静态属性提升
-- Patch Flag 标记动态节点
-- Block Tree 优化更新性能
+Vue 3 在编译时引入了多项优化策略，显著提升了应用性能：
+
+#### 1.1 静态树提升（Static Tree Hoisting）
+
+静态树提升是指将永远不会改变的静态子树提升到渲染函数之外，使其只被创建一次，后续的重新渲染直接复用。
+
+```javascript
+// 模板
+<div>
+  <div class="header">
+    <h1>标题</h1>
+    <p>静态内容</p>
+  </div>
+  <div class="content">{{ message }}</div>
+</div>;
+
+// 编译后
+const hoisted = createVNode('div', { class: 'header' }, [
+  createVNode('h1', null, '标题'),
+  createVNode('p', null, '静态内容'),
+]);
+
+function render() {
+  return createVNode('div', null, [
+    hoisted, // 直接复用静态子树
+    createVNode('div', { class: 'content' }, ctx.message),
+  ]);
+}
+```
+
+这种优化：
+
+- 减少了每次渲染时的 VNode 创建开销
+- 降低了内存占用
+- 提高了渲染性能
+
+#### 1.2 静态属性提升
+
+与静态树提升类似，静态属性也会被提升到渲染函数之外。
+
+```javascript
+// 模板
+<div>
+  <div class="card" data-type="info" :title="title">
+    {{ content }}
+  </div>
+</div>
+
+// 编译后
+const hoistedProps = {
+  class: "card",
+  "data-type": "info"
+}
+
+function render() {
+  return createVNode("div", null, [
+    createVNode("div", {
+      ...hoistedProps,  // 复用静态属性
+      title: ctx.title
+    }, ctx.content)
+  ])
+}
+```
+
+优势：
+
+- 避免重复创建静态属性对象
+- 减少内存分配
+- 提高属性比对效率
+
+#### 1.3 Patch Flag 标记动态节点
+
+Patch Flag 是 Vue 3 引入的一个重要优化，它会在编译时标记动态内容的类型，运行时只需要关注带有标记的内容。
+
+```javascript
+// 模板
+<div>
+  <div>{{ text }}</div>
+  <div :class="cls"></div>
+  <div :id="id">{{ text }}</div>
+</div>
+
+// 编译后
+function render() {
+  return createVNode("div", null, [
+    createVNode("div", null, ctx.text, 1 /* TEXT */),
+    createVNode("div", { class: ctx.cls }, null, 2 /* CLASS */),
+    createVNode("div", { id: ctx.id }, ctx.text, 3 /* PROPS + TEXT */)
+  ])
+}
+```
+
+Patch Flag 类型：
+
+- TEXT = 1: 文本内容是动态的
+- CLASS = 2: class 是动态的
+- PROPS = 4: 属性是动态的
+- STYLE = 8: style 是动态的
+- 等等...
+
+优势：
+
+- 精确定位需要更新的内容
+- 跳过静态内容的比对
+- 提高 diff 效率
+
+#### 1.4 Block Tree 优化更新性能
+
+Block Tree 是 Vue 3 中的一个更高层次的优化，它将模板基于动态节点进行分块。
+
+```javascript
+// 模板
+<div>
+  <div>静态内容</div>
+  <div v-if="show">
+    <div>{{ dynamic }}</div>
+  </div>
+</div>;
+
+// 编译后（简化版）
+function render() {
+  return createBlock('div', null, [
+    createVNode('div', null, '静态内容'),
+    (openBlock(),
+    createBlock(Fragment, null, [
+      ctx.show
+        ? createBlock('div', null, [createVNode('div', null, ctx.dynamic, 1 /* TEXT */)])
+        : createCommentVNode('v-if'),
+    ])),
+  ]);
+}
+```
+
+Block Tree 的工作原理：
+
+1. 将模板分割成不同的 block
+2. 每个 block 跟踪其内部的动态节点
+3. 更新时只需要遍历 block 中的动态节点
+
+优势：
+
+- 减少虚拟 DOM 树的遍历范围
+- 提高大型应用的更新性能
+- 更精确的更新追踪
+
+这些编译时优化共同作用，使得 Vue 3 相比 Vue 2：
+
+- 初始渲染速度提升约 40%
+- 更新性能提升约 260%
+- 内存使用减少约 40%
+
+在实际开发中，我们可以：
+
+1. 尽可能使用静态内容
+2. 合理划分动态和静态内容
+3. 利用 v-once 和 v-memo 等指令进一步优化
+4. 关注编译器警告，避免反优化
+
+通过理解这些优化策略，我们可以编写出更高性能的 Vue 应用。
 
 ### 2. 运行时优化
 
