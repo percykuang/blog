@@ -172,7 +172,216 @@ function commitWork(fiber) {
 2. 只有在所有工作单元处理完后才会执行
 3. 按照深度优先的顺序应用变更
 
-## 5. 总结
+## 5. 完整代码
+
+```js
+const React = {
+  createElement(type, props, ...children) {
+    return {
+      type,
+      props: {
+        ...props,
+        children: children.map((child) => (typeof child === 'object' ? child : React.createTextElement(child))),
+      },
+    };
+  },
+  createTextElement(text) {
+    return {
+      type: 'TEXT_ELEMENT',
+      props: { nodeValue: text, children: [] },
+    };
+  },
+};
+
+const vdom = React.createElement('div', { id: '1' }, React.createElement('span', null, '2'));
+
+// <div id="1"><span>2</span></div>
+console.log(vdom);
+
+// 完成虚拟DOM转fiber结构和时间切片
+
+let nextUnitOfWork = null; // 下一个工作单元
+let wipRoot = null; // 当前正在工作的根节点
+let currentRoot = null; // 上一次的根节点
+let deletions = null; // 需要删除的节点
+
+function render(element, container) {
+  // 初始化fiber结构
+  wipRoot = {
+    dom: container,
+    props: {
+      children: [element],
+    },
+    // 旧的fiber树
+    alternate: currentRoot,
+  };
+  deletions = [];
+  nextUnitOfWork = wipRoot;
+}
+
+function createDom(fiber) {
+  const dom = fiber.type === 'TEXT_ELEMENT' ? document.createTextNode('') : document.createElement(fiber.type);
+
+  updateDom(dom, {}, fiber.props); // 挂在新的属性
+
+  return dom;
+}
+
+function updateDom(dom, prevProps, nextProps) {
+  // 旧的属性删除
+  Object.keys(prevProps)
+    .filter((name) => name !== 'children')
+    .forEach((name) => {
+      dom[name] = '';
+    });
+  // 新的属性要添加
+  Object.keys(nextProps)
+    .filter((name) => name !== 'children')
+    .forEach((name) => {
+      dom[name] = nextProps[name];
+    });
+}
+
+function workLoop(deadline) {
+  // 是否需要让出时间
+  let shouldYield = false;
+  while (nextUnitOfWork && !shouldYield) {
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+    shouldYield = deadline.timeRemaining() < 1;
+  }
+  // 没有工作单元 -> 所有改动都已经完成
+  if (!nextUnitOfWork && wipRoot) {
+    commitRoot();
+  }
+  requestIdleCallback(workLoop);
+}
+
+requestIdleCallback(workLoop);
+
+// 返回值返回下一个工作单元（fiber）
+function performUnitOfWork(fiber) {
+  if (!fiber.dom) {
+    fiber.dom = createDom(fiber);
+  }
+  const elements = Array.isArray(fiber.props.children) ? fiber.props.children : [fiber.props.children];
+  // 遍历子节点
+  reconcileChildren(fiber, elements);
+
+  if (fiber.child) {
+    return fiber.child;
+  }
+  let nextFiber = fiber;
+  while (nextFiber) {
+    if (nextFiber.sibling) {
+      // 返回兄弟节点
+      return nextFiber.sibling;
+    }
+    // 返回父节点
+    nextFiber = nextFiber.parent;
+  }
+  return null;
+}
+
+function createFiber(element, parent) {
+  return {
+    type: element.type,
+    props: element.props,
+    parent: parent,
+    dom: null,
+    alternate: null,
+    effectTag: null,
+    sibling: null,
+    child: null,
+  };
+}
+
+// diff 算法、形成 fiber 树
+function reconcileChildren(fiber, elements) {
+  let index = 0;
+  let oldFiber = fiber.alternate && fiber.alternate.child;
+  let prevSibling = null;
+
+  while (index < elements.length || oldFiber !== null) {
+    const element = elements[index];
+    let newFiber = null;
+    // 1、复用
+    const sameType = oldFiber && element && oldFiber.type === element.type;
+    if (sameType) {
+      console.log('复用', element);
+      newFiber = {
+        // 类型复用
+        type: oldFiber.type,
+        // 属性可能会变
+        props: element.props,
+        // 复用dom
+        dom: oldFiber.dom,
+        parent: fiber,
+        alternate: oldFiber,
+        // 更新
+        effectTag: 'UPDATE',
+      };
+    }
+    // 2、新增
+    if (!sameType && element) {
+      console.log('新增', element);
+      newFiber = createFiber(element, fiber);
+      newFiber.effectTag = 'PLACEMENT'; // 新增
+    }
+    // 3、删除
+    if (oldFiber && !sameType) {
+      console.log('删除', oldFiber);
+      oldFiber.effectTag = 'DELETION';
+      deletions.push(oldFiber);
+    }
+    if (oldFiber) {
+      oldFiber = oldFiber.sibling;
+    }
+
+    if (index === 0) {
+      fiber.child = newFiber;
+    } else {
+      prevSibling.sibling = newFiber;
+    }
+    prevSibling = newFiber;
+    index++;
+  }
+}
+
+function commitRoot() {
+  deletions.forEach(commitWork);
+  commitWork(wipRoot.child);
+  currentRoot = wipRoot; // 更新旧的fiber树
+  wipRoot = null; // 所有的变化都完成了 回归原始状态
+}
+
+// 提交工作
+function commitWork(fiber) {
+  if (!fiber) {
+    return;
+  }
+  const domParent = fiber.parent.dom;
+  if (fiber.effectTag === 'PLACEMENT' && fiber.dom !== null) {
+    domParent.appendChild(fiber.dom);
+  } else if (fiber.effectTag === 'UPDATE' && fiber.dom !== null) {
+    updateDom(fiber.dom, fiber.alternate.props, fiber.props);
+  } else if (fiber.effectTag === 'DELETION') {
+    domParent.removeChild(fiber.dom);
+  }
+  commitWork(fiber.child);
+  commitWork(fiber.sibling);
+}
+
+// 获取容器元素
+const container = document.getElementById('root');
+
+render(React.createElement('div', { id: 1 }, React.createElement('span', null, 'a')), container);
+
+setTimeout(() => {
+  render(React.createElement('div', { id: 1 }, React.createElement('p', null, 'b')), container);
+}, 2000);
+```
+
+## 6. 总结
 
 这个简化版的实现展示了 React 的核心工作原理：
 
