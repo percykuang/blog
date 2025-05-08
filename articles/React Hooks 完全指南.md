@@ -971,6 +971,94 @@ function TabContainer() {
 - 复杂表单的状态更新
 - 需要保持 UI 响应性的任何场景
 
+### useTransition 与防抖的比较
+
+在输入框实时搜索场景中，useTransition 和防抖都能解决输入框实时搜索导致的页面卡顿问题，但工作原理和适用场景不同。
+
+useTransition 和防抖都能解决输入框实时搜索导致的页面卡顿问题，但工作原理和适用场景不同：
+
+为什么 startTransition 能解决卡顿
+startTransition 将状态更新标记为"非紧急"，React 会：
+
+- 优先处理输入框的更新（高优先级）
+- 在空闲时间处理列表渲染（低优先级）
+- 允许用户继续与页面交互，不阻塞主线程
+- 提供 isPending 状态显示加载指示器
+
+```js
+function SearchResults() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [isPending, startTransition] = useTransition();
+
+  const handleChange = (e) => {
+    // 立即更新输入框（高优先级）
+    setQuery(e.target.value);
+
+    // 将搜索结果更新标记为低优先级
+    startTransition(() => {
+      // 假设这是一个耗时的操作
+      const searchResults = performExpensiveSearch(e.target.value);
+      setResults(searchResults);
+    });
+  };
+}
+```
+
+防抖方案：
+
+- 延迟执行搜索，直到用户停止输入
+- 减少总请求/计算次数
+- 完全阻止更新，直到延迟结束
+
+useTransition 方案：
+
+- 立即开始处理，但以低优先级进行
+- 不减少计算次数，只改变优先级
+- 保持 UI 响应性，可被新更新中断
+
+选择建议
+
+选择 useTransition 当：
+
+- 需要保持 UI 响应性最重要
+- 希望立即开始处理，但不阻塞用户交互
+- 想要显示加载状态（通过 isPending）
+
+选择防抖当：
+
+- 需要减少 API 调用或昂贵计算的次数
+- 用户输入非常频繁，且每次计算成本很高
+- 网络请求需要限流
+
+最佳实践：结合两者使用
+
+```js
+function SearchComponent() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [isPending, startTransition] = useTransition();
+
+  // 防抖搜索函数
+  const debouncedSearch = useCallback(
+    debounce((searchTerm) => {
+      startTransition(() => {
+        const searchResults = performExpensiveSearch(searchTerm);
+        setResults(searchResults);
+      });
+    }, 300),
+    []
+  );
+
+  const handleChange = (e) => {
+    setQuery(e.target.value);
+    debouncedSearch(e.target.value);
+  };
+}
+```
+
+这样既减少了计算次数，又保持了 UI 的响应性。
+
 ## 13. useDeferredValue - 延迟更新低优先级内容
 
 `useDeferredValue` 接收一个值，并返回该值的延迟版本。在紧急更新期间，它会保留旧值，然后在后台更新。
@@ -1050,6 +1138,83 @@ function SearchApp() {
 - 文本编辑器的实时预览
 - 图表和可视化的更新
 - 任何需要延迟渲染的场景
+
+### useDeferredValue 替代 startTransition + 防抖
+
+在输入框搜索场景中，useDeferredValue 可以替代 startTransition + 防抖的组合，提供更简洁的解决方案。
+
+基本实现方式
+
+```jsx
+import React, { memo, useDeferredValue, useState } from 'react';
+
+function SearchComponent() {
+  const [query, setQuery] = useState('');
+
+  // 创建查询的延迟版本
+  const deferredQuery = useDeferredValue(query);
+
+  // 检查是否正在使用旧值
+  const isStale = query !== deferredQuery;
+
+  return (
+    <div>
+      <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索..." />
+
+      {/* 可选：显示加载状态 */}
+      {isStale && <div className="loading-indicator">加载中...</div>}
+
+      {/* 使用延迟值渲染结果列表，并添加视觉反馈 */}
+      <div style={{ opacity: isStale ? 0.8 : 1 }}>
+        <MemoizedResultsList query={deferredQuery} />
+      </div>
+    </div>
+  );
+}
+
+// 使用 memo 包装开销大的组件
+const MemoizedResultsList = memo(function ResultsList({ query }) {
+  // 执行昂贵的搜索操作
+  const results = performExpensiveSearch(query);
+
+  return (
+    <ul>
+      {results.map((item) => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  );
+});
+```
+
+为什么 useDeferredValue 可以替代组合方案
+
+1. 自动处理优先级：useDeferredValue 内部使用了与 useTransition 相同的机制，将渲染标记为低优先级
+2. 简化代码：不需要手动管理 startTransition 和防抖函数
+3. 内置状态比较：通过 query !== deferredQuery 可以轻松检测是否处于"stale"状态
+4. 与 memo 配合良好：结合 React.memo 使用，只有当 deferredValue 真正变化时才重新渲染昂贵组件
+
+使用 useDeferredValue 的最佳实践
+
+1. 添加视觉反馈：当使用旧值时，可以通过降低透明度等方式提供视觉反馈
+2. 设置初始值（React 19 新特性）：
+
+```js
+// 在 React 19 中可以提供初始值
+const deferredQuery = useDeferredValue(query, '');
+```
+
+3. 与 Suspense 集成：useDeferredValue 与 Suspense 集成良好，可以优雅处理加载状态
+4. 结合 memo 使用：确保使用 deferredValue 的组件用 memo 包装，避免不必要的重渲染
+
+何时选择 useDeferredValue 而非 startTransition + 防抖
+
+- 当你无法直接控制触发更新的代码（如第三方库）
+- 当你想要更简洁的代码结构
+- 当你需要对派生值而非状态更新进行优先级控制
+- 当你想要自动处理"stale"状态的视觉反馈
+
+useDeferredValue 提供了一种更声明式的方法来处理输入框搜索场景中的性能问题，在大多数情况下可以完全替代 startTransition + 防抖的组合方案。
 
 ## 14. useId - 生成唯一ID
 
