@@ -880,8 +880,6 @@ function Counter() {
 - 处理需要在并发渲染中保持一致性的外部状态
 - 自定义事件系统
 
-<a id="useTransition"></a>
-
 ## 12. useTransition - 非阻塞状态更新
 
 `useTransition` 允许将状态更新标记为非紧急的，这样其他更新可以先完成，避免界面卡顿。
@@ -975,8 +973,6 @@ function TabContainer() {
 - 复杂表单的状态更新
 - 需要保持 UI 响应性的任何场景
 
-<a id="useDeferredValue"></a>
-
 ## 13. useDeferredValue - 延迟更新低优先级内容
 
 `useDeferredValue` 接收一个值，并返回该值的延迟版本。在紧急更新期间，它会保留旧值，然后在后台更新。
@@ -1056,8 +1052,6 @@ function SearchApp() {
 - 文本编辑器的实时预览
 - 图表和可视化的更新
 - 任何需要延迟渲染的场景
-
-<a id="useId"></a>
 
 ## 14. useId - 生成唯一ID
 
@@ -1151,8 +1145,6 @@ function Accordion() {
 - 客户端和服务器端渲染的一致性
 - 组件库开发
 
-<a id="useInsertionEffect"></a>
-
 ## 15. useInsertionEffect - CSS-in-JS 库的样式注入
 
 `useInsertionEffect` 是 React 18 引入的新 Hook，专为 CSS-in-JS 库设计，用于在 DOM 变更之前注入样式，避免布局抖动。
@@ -1218,8 +1210,6 @@ function StyledComponent() {
 - 动态样式注入
 - 避免样式注入导致的布局抖动
 - 性能优化，特别是在并发渲染模式下
-
-<a id="useOptimistic"></a>
 
 ## 16. useOptimistic - 乐观 UI 更新
 
@@ -1358,8 +1348,6 @@ function CommentForm({ postId }) {
 - 购物车添加/删除商品
 - 任务管理应用中的任务状态更新
 - 任何需要提高感知性能的用户交互
-
-<a id="useActionState"></a>
 
 ## 17. useActionState - 处理异步操作状态
 
@@ -1556,8 +1544,6 @@ function TodoApp() {
 - 任何需要跟踪加载、错误和成功状态的异步操作
 - 与乐观更新结合使用的复杂交互
 
-<a id="自定义Hooks"></a>
-
 ## 18. 自定义 Hooks - 封装和复用逻辑
 
 自定义 Hooks 是一种复用状态逻辑的方式，它不复用状态本身，而是复用状态逻辑。
@@ -1732,8 +1718,6 @@ function UserList() {
   );
 }
 ```
-
-<a id="Hooks使用规则"></a>
 
 ## 19. Hooks 使用规则和最佳实践
 
