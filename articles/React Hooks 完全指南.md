@@ -5,31 +5,6 @@
 
 React Hooks 是 React 16.8 版本引入的特性，它让我们可以在不编写 class 组件的情况下使用状态和其他 React 特性。Hooks 的出现彻底改变了 React 的开发模式，使代码更简洁、更易于理解和测试。本文将全面解析 React 内置的各种 Hooks，包括它们的用法、应用场景以及最佳实践。
 
-## 目录
-
-1. [useState - 状态管理的基础](#useState)
-2. [useEffect - 处理副作用](#useEffect)
-3. [useContext - 跨组件共享数据](#useContext)
-4. [useReducer - 复杂状态管理](#useReducer)
-5. [useCallback - 记忆化回调函数](#useCallback)
-6. [useMemo - 记忆化计算结果](#useMemo)
-7. [useRef - 引用 DOM 和保存变量](#useRef)
-8. [useImperativeHandle - 自定义暴露给父组件的实例值](#useImperativeHandle)
-9. [useLayoutEffect - 同步执行副作用](#useLayoutEffect)
-10. [useDebugValue - 开发者工具中显示自定义 Hook 标签](#useDebugValue)
-11. [useSyncExternalStore - 订阅外部数据源](#useSyncExternalStore)
-12. [useTransition - 非阻塞状态更新](#useTransition)
-13. [useDeferredValue - 延迟更新低优先级内容](#useDeferredValue)
-14. [useId - 生成唯一ID](#useId)
-15. [useInsertionEffect - CSS-in-JS 库的样式注入](#useInsertionEffect)
-16. [useOptimistic - 乐观 UI 更新](#useOptimistic)
-17. [useActionState - 处理异步操作状态](#useActionState)
-18. [use - 消费 Promise 和 Context](#use)
-19. [自定义 Hooks - 封装和复用逻辑](#自定义Hooks)
-20. [Hooks 使用规则和最佳实践](#Hooks使用规则)
-
-<a id="useState"></a>
-
 ## 1. useState - 状态管理的基础
 
 `useState` 是最基础的 Hook，它让函数组件能够拥有自己的状态。
@@ -115,8 +90,6 @@ function ExpensiveInitialState() {
 - 计数器、定时器状态
 - 用户输入处理
 - 简单的组件本地状态管理
-
-<a id="useEffect"></a>
 
 ## 2. useEffect - 处理副作用
 
@@ -229,8 +202,6 @@ function UserProfile({ userId }) {
 - 定时器和间隔器
 - 与第三方库集成
 
-<a id="useContext"></a>
-
 ## 3. useContext - 跨组件共享数据
 
 `useContext` 让你可以订阅 React 的 Context，而不必使用嵌套的 Consumer 组件。
@@ -301,8 +272,6 @@ function App() {
 - 语言偏好设置
 - 全局状态管理
 - 路由参数共享
-
-<a id="useReducer"></a>
 
 ## 4. useReducer - 复杂状态管理
 
@@ -413,8 +382,6 @@ function TodoList() {
 - 游戏状态管理
 - 全局状态管理（结合 Context）
 
-<a id="useCallback"></a>
-
 ## 5. useCallback - 记忆化回调函数
 
 `useCallback` 返回一个记忆化的回调函数，只有当依赖项变化时，该回调函数才会更新。
@@ -478,8 +445,6 @@ function SearchComponent({ query }) {
 - 事件处理函数
 - 防抖和节流函数的依赖
 - API 调用函数
-
-<a id="useMemo"></a>
 
 ## 6. useMemo - 记忆化计算结果
 
@@ -561,8 +526,6 @@ const memoizedCallback = useMemo(() => {
 - 记忆化对象和数组引用
 - 复杂的数据处理和格式化
 - 依赖项计算
-
-<a id="useRef"></a>
 
 ## 7. useRef - 引用 DOM 和保存变量
 
@@ -665,8 +628,6 @@ function Counter() {
 - 存储不需要触发重渲染的值
 - 实现命令式动画
 
-<a id="useImperativeHandle"></a>
-
 ## 8. useImperativeHandle - 自定义暴露给父组件的实例值
 
 `useImperativeHandle` 可以让你在使用 `ref` 时自定义暴露给父组件的实例值。
@@ -725,8 +686,6 @@ function Parent() {
 - 封装第三方库的命令式接口
 - 实现自定义动画控制
 
-<a id="useLayoutEffect"></a>
-
 ## 9. useLayoutEffect - 同步执行副作用
 
 `useLayoutEffect` 与 `useEffect` 的函数签名完全相同，但它会在所有 DOM 变更之后同步调用，并且会阻塞浏览器渲染。
@@ -782,8 +741,6 @@ function Tooltip() {
 - 动画的初始化
 - 依赖于 DOM 布局的计算
 - 需要立即响应 DOM 变化的场景
-
-<a id="useDebugValue"></a>
 
 ## 10. useDebugValue - 开发者工具中显示自定义 Hook 标签
 
@@ -845,8 +802,6 @@ function useCustomHook(data) {
 - 在团队协作中帮助其他开发者理解 Hook 的状态
 - 复杂状态的可视化
 - 开发和调试过程中的状态监控
-
-<a id="useSyncExternalStore"></a>
 
 ## 11. useSyncExternalStore - 订阅外部数据源
 
