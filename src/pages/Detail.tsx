@@ -1,20 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import type { FC } from 'react';
 
 import { useParams } from 'react-router-dom';
 
-import { Fancybox } from '@fancyapps/ui';
-import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import dayjs from 'dayjs';
 import DOMPurify from 'dompurify';
-import 'highlight.js/styles/github.css';
 import { Tokens, marked } from 'marked';
 
 import articleList from '@/articles.json';
-import { ArticleOutline, NotFound } from '@/components';
+import { ArticleOutline, Loading, NotFound } from '@/components';
 import { MARKED_CONFIG, MARKED_HIGHLIGHT_CONFIG, MARKED_RENDERER_CONFIG } from '@/config';
 import { useCopy } from '@/hooks';
 import type { Article } from '@/types';
+
+// Lazy load Fancybox and its CSS
+const LazyFancybox = lazy(() => import('@/components/LazyFancybox'));
 
 // 配置高亮
 marked.use(MARKED_HIGHLIGHT_CONFIG);
@@ -39,41 +39,15 @@ const Detail: FC = () => {
   }, [params.id]);
 
   useEffect(() => {
+    // 为所有复制按钮添加事件监听
     if (article) {
-      Fancybox.destroy();
-
-      Fancybox.bind(document.body, '[data-fancybox="gallery"]', {
-        compact: false,
-        idle: false,
-        wheel: 'zoom',
-        dragToClose: false,
-        contentClick: 'iterateZoom',
-        Hash: false,
-        Images: {
-          zoom: true,
-          Panzoom: {
-            maxScale: 5,
-          },
-        },
-        Toolbar: {
-          enabled: true,
-          display: {
-            left: ['infobar'],
-            middle: ['zoomIn', 'zoomOut', 'toggle1to1', 'rotateCCW', 'rotateCW', 'flipX', 'flipY'],
-            right: ['slideshow', 'thumbs', 'close'],
-          },
-        },
-      });
-
-      // 为所有复制按钮添加事件监听
       registerCopy();
 
       return () => {
-        Fancybox.destroy();
         unregisterCopy();
       };
     }
-  }, [article]);
+  }, [article, registerCopy, unregisterCopy]);
 
   const parseArticle = useMemo(() => {
     if (!article) return { content: '', headings: [] };
@@ -149,12 +123,18 @@ const Detail: FC = () => {
           <div className="mb-4 text-xs text-stone-400">
             {`发布于 ${dayjs(article.date).format('YYYY.MM.DD')} | 字数 ${article.wordCount}`}
           </div>
-          <article
-            className="prose prose-stone lg:prose-lg dark:prose-invert prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 max-w-none !font-normal [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre_code]:!font-mono [&_pre_code]:!text-sm"
-            dangerouslySetInnerHTML={{
-              __html: parseArticle.content,
-            }}
-          />
+
+          {/* Lazy load Fancybox only when needed */}
+          <Suspense fallback={<Loading size={24} />}>
+            <LazyFancybox>
+              <article
+                className="prose prose-stone lg:prose-lg dark:prose-invert prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 max-w-none !font-normal [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre_code]:!font-mono [&_pre_code]:!text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: parseArticle.content,
+                }}
+              />
+            </LazyFancybox>
+          </Suspense>
         </div>
       </div>
     </div>

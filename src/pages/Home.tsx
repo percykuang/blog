@@ -1,17 +1,13 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, memo, useMemo } from 'react';
 
 import articleList from '@/articles.json';
 import { List } from '@/components';
-import type { Article } from '@/types';
 
 const Home: FC = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
-
-  useEffect(() => {
-    setArticles(articleList);
-  }, []);
+  // 使用 useMemo 代替 useState + useEffect 以提高性能
+  const articles = useMemo(() => articleList, []);
 
   return <List articles={articles} />;
 };
 
-export default Home;
+export default memo(Home);

@@ -1,5 +1,7 @@
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import { throttle } from 'lodash';
 
 interface ArticleOutlineItem {
   id: string;
@@ -18,43 +20,52 @@ const ArticleOutline: FC<ArticleOutlineProps> = ({ headings, title }) => {
   const SCROLL_OFFSET = 96;
   const titleId = 'article-title';
 
+  // 使用记忆化处理标题元素计算函数
+  const getHeadingElements = useCallback(() => {
+    return [
+      { id: titleId, top: document.getElementById(titleId)?.getBoundingClientRect().top ?? 0 },
+      ...headings
+        .map(({ id }) => {
+          const element = document.getElementById(id);
+          if (element) {
+            return {
+              id,
+              top: element.getBoundingClientRect().top,
+            };
+          }
+          return null;
+        })
+        .filter((item): item is { id: string; top: number } => item !== null),
+    ];
+  }, [headings, titleId]);
+
+  // 创建节流后的滚动处理函数
+  const handleScroll = useMemo(
+    () =>
+      throttle(() => {
+        const scrollTop = window.scrollY;
+        setIsSticky(scrollTop > 120);
+
+        const headingElements = getHeadingElements();
+        const currentHeading = headingElements.find((heading) => heading.top >= SCROLL_OFFSET);
+
+        if (currentHeading) {
+          setActiveId(currentHeading.id);
+        } else if (headingElements.length > 0) {
+          setActiveId(headingElements[headingElements.length - 1].id);
+        }
+      }, 100), // 节流，最多每100毫秒执行一次
+    [getHeadingElements, SCROLL_OFFSET]
+  );
+
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsSticky(scrollTop > 120);
-
-      const headingElements = [
-        { id: titleId, top: document.getElementById(titleId)?.getBoundingClientRect().top ?? 0 },
-        ...headings
-          .map(({ id }) => {
-            const element = document.getElementById(id);
-            if (element) {
-              return {
-                id,
-                top: element.getBoundingClientRect().top,
-              };
-            }
-            return null;
-          })
-          .filter((item): item is { id: string; top: number } => item !== null),
-      ];
-
-      const currentHeading = headingElements.find((heading) => heading.top >= SCROLL_OFFSET);
-
-      if (currentHeading) {
-        setActiveId(currentHeading.id);
-      } else if (headingElements.length > 0) {
-        setActiveId(headingElements[headingElements.length - 1].id);
-      }
-    };
-
     window.addEventListener('scroll', handleScroll);
     handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [headings]);
+  }, [handleScroll]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
