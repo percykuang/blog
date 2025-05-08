@@ -125,7 +125,13 @@ const Detail: FC = () => {
           </div>
 
           {/* Lazy load Fancybox only when needed */}
-          <Suspense fallback={<Loading size={24} />}>
+          <Suspense
+            fallback={
+              <div className="flex min-h-[200px] w-full items-center justify-center">
+                <Loading size={32} className="mx-auto" />
+              </div>
+            }
+          >
             <LazyFancybox>
               <article
                 className="prose prose-stone lg:prose-lg dark:prose-invert prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 max-w-none !font-normal [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre_code]:!font-mono [&_pre_code]:!text-sm"
