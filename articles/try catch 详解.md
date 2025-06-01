@@ -76,6 +76,18 @@ async function test() {
 test();
 ```
 
+上面的代码等价于：
+
+```js
+function test() {
+  return Promise.reject(new Error('异步错误')).catch((e) => {
+    console.log('捕获到：', e.message);
+  });
+}
+```
+
+async/await + try...catch 就是 Promise.then().catch() 的语法糖，本质一样，只是写法更直观
+
 ## 总结
 
 - try...catch 只能捕获同步代码块里的异常，不能捕获异步回调（如 setTimeout、事件监听器）里的异常。
