@@ -1,4 +1,5 @@
-# v-model 详解
+@date: 2021-03-26
+@tag: [vue]
 
 ## 一、v-model 是什么？
 
@@ -110,19 +111,7 @@ setup(props, { emit }) {
 
 ---
 
-## 五、v-model 的实现流程图
-
-```mermaid
-graph TD
-    A[数据变化] --> B[视图自动更新]
-    B --> C[用户输入]
-    C --> D[触发 input 事件]
-    D --> E[数据自动更新]
-```
-
----
-
-## 六、常见问题
+## 五、常见问题
 
 1. **v-model 只能用于表单吗？**
 
@@ -137,7 +126,7 @@ graph TD
 
 ---
 
-## 七、总结
+## 六、总结
 
 - v-model 是 Vue 的双向绑定语法糖
 - Vue2 本质是 `:value` + `@input`
